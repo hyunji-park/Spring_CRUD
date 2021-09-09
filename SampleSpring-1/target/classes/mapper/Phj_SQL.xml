@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="phjTest">
+	<select id="getSELLList" parameterType="hashmap" resultType="hashmap" >
+		select SELL.SELL_NO, SELL.ITEM_NAME, SELL.COUNT, SELL.SELL_DT
+		from (select SELL_NO, ITEM_NAME, COUNT, to_char(SELL_DT, 'YYYY-MM-DD') SELL_DT,
+				row_number() over(order by SELL_NO desc) as rnum
+			from SELL
+            WHERE 1 = 1
+
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					and ITEM_NAME like '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					and COUNT like '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+			)SELL
+		 WHERE SELL.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getSELL" parameterType="hashmap" resultType="hashmap">
+		select SELL_NO, ITEM_NAME, COUNT, to_char(SELL_DT, 'YYYY-MM-DD')
+		from SELL where SELL_NO = #{sell_no}
+	</select>
+	
+	<insert id="addSELL" parameterType="hashmap">
+		insert into SELL(SELL_NO, ITEM_NAME, COUNT, SELL_DT) 
+		values (SELL_SEQ.nextval, #{item_name}, #{count}, SYSDATE) 
+	</insert>
+	
+	<update id="updateSELL" parameterType="hashmap">
+		update SELL set ITEM_NAME = #{item_name}, COUNT = #{count}
+		where SELL_NO = #{sell_no}
+	</update>
+	
+	<delete id="deleteSELL" parameterType="hashmap">
+		delete from SELL where SELL_NO = #{sell_no}
+	</delete>
+	
+	<select id="getSELLCnt" parameterType="hashmap" resultType="integer">
+      SELECT COUNT(*)
+      FROM SELL
+      WHERE 1 = 1 
+      <if test="searchTxt != null and searchTxt != ''">
+          <choose>
+             <when test="searchGbn eq 0">
+                AND ITEM_NAME LIKE '%' || #{searchTxt} || '%'
+             </when>
+             <when test="searchGbn eq 1">
+                AND COUNT LIKE '%' || #{searchTxt} || '%'
+             </when>
+          </choose>
+		</if>
+	</select>
+</mapper>

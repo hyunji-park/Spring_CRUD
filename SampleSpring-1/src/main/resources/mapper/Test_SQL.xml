@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test">
+	<select id="getB1List" parameterType="hashmap" resultType="hashmap" >
+		 SELECT B1.NO, B1.TITLE, B1.WRITER, B1.DT
+     	 FROM(SELECT NO, TITLE, WRITER, TO_CHAR(DT, 'YYYY-MM-DD')AS DT,
+                ROW_NUMBER() OVER(ORDER BY NO DESC) AS RNUM
+            FROM B1
+            WHERE 1 = 1 <!-- 다른조건이 생길수있는것을 대비하여 추가함 -->
+
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					and title like '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					and writer like '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+			)B1
+		 WHERE B1.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getB1" parameterType="hashmap" resultType="hashmap">
+		select no, title, writer, con, to_char(DT, 'YYYY-MM-DD')as DT 
+		from B1 where no = #{no}
+	</select>
+	
+	<insert id="addB1" parameterType="hashmap">
+		insert into B1(no, title, writer, con) 
+		values (B1_SEQ.nextval, #{title}, #{writer}, #{con}) <!-- 값은 소문자로 넘어와서 소문자로 씀 -->
+	</insert>
+	
+	<update id="updateB1" parameterType="hashmap">
+		update B1 set title = #{title}, writer = #{writer}, con = #{con}
+		where no = #{no}
+	</update>
+	
+	<delete id="deleteB1" parameterType="hashmap">
+		delete from B1 where no = #{no}
+	</delete>
+	
+	<select id="getB1Cnt" parameterType="hashmap" resultType="integer">
+      SELECT COUNT(*) AS CNT
+      FROM B1
+      WHERE 1 = 1 <!-- 다른조건이 생길수있는것을 대비하여 추가함 -->
+      <if test="searchTxt != null and searchTxt != ''"> <!-- 값이 없지않고 공백이 아닐때 == 값이 있을때만 실행-->
+          <choose>
+             <when test="searchGbn eq 0">
+                AND TITLE LIKE '%' || #{searchTxt} || '%'
+             </when>
+             <when test="searchGbn eq 1">
+                AND WRITER LIKE '%' || #{searchTxt} || '%'
+             </when>
+          </choose>
+		</if>
+	</select>
+</mapper>
