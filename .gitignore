@@ -1,9 +1,9 @@
 
 ### Eclipse ###
 .metadata
-bin/
-tmp/
-target/
+SampleSpring/bin/
+SampleSpring/tmp/
+SampleSpring/target/
 *.tmp
 *.bak
 *.swp
