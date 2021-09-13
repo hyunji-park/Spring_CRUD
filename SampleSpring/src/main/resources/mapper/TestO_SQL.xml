@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="testO">
+	<select id="testOList" parameterType="hashmap" resultType="hashmap">
+		SELECT O1.O_NO, O1.M_NO, O1.M_NM, O1.CON, O1.DT
+		FROM (
+			SELECT O_NO, M1.M_NO, M1.M_NM, O1.CON, O1.DT,
+				ROW_NUMBER() OVER(ORDER BY O_NO DESC) AS RNUM
+			FROM O1 O1 INNER JOIN M1 M1
+			ON O1.M_NO = M1.M_NO
+			) O1
+		WHERE O1.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getO1Cnt" parameterType="hashmap" resultType="integer">
+		SELECT COUNT(*) as CNT
+    	FROM (
+    		SELECT O1.O_NO, M1.M_NO, M1.M_NM, O1.CON, O1.DT
+    		FROM O1 O1 INNER JOIN M1 M1
+			ON O1.M_NO = M1.M_NO
+    		)
+    	WHERE 1 = 1 
+	</select>
+	
+	
+	<insert id="addO1" parameterType="hashmap">
+		INSERT INTO O1 (O_NO, M_NO, CON)
+		VALUES (O1_SEQ.NEXTVAL, #{m_no}, #{con})
+	</insert>
+	
+	
+	<delete id="deleteO1" parameterType="hashmap">
+		delete from O1 where O_NO = #{no}
+	</delete>
+	
+	<update id="updateO1" parameterType="hashmap">
+		UPDATE O1 SET CON = #{con}
+		WHERE O_NO = #{no}
+	</update>
+</mapper>
