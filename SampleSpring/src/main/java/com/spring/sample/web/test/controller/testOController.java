@@ -1,6 +1,5 @@
 package com.spring.sample.web.test.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,36 +17,18 @@ import com.spring.sample.web.test.service.ITestOService;
 public class testOController {
 	@Autowired
 	public ITestOService iTestOService;
-	
+
 	@Autowired
 	public IPagingService iPagingService;
-	
+
 	@RequestMapping(value ="/testO")
-	  public ModelAndView testO(ModelAndView mav) throws Throwable {
-	  
-	  List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-	  
-	  HashMap<String, String> data = new HashMap<String, String>();
-	  data.put("O_NO", "1");
-	  data.put("M_NO", "1");
-	  data.put("M_NM", "test");
-	  data.put("CON", "가나다라");
-	  
-	  list.add(data);
-	  
-	  mav.addObject("list", list); mav.setViewName("testO/testO");
-	  
-	  return mav; 
-	  }
-	 
-	@RequestMapping(value ="/testOList")
-	public ModelAndView testOList (
-		@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable {
+	public ModelAndView testO(@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable {
 
 		int page = 1;
 		if (params.get("page") != null) {
 			page = Integer.parseInt(params.get("page"));
 		}
+		//try {
 		int cnt = iTestOService.getO1Cnt(params); //글 개수
 		PagingBean pb = iPagingService.getPagingBean(page, cnt, 2, 2);
 		params.put("startCnt", Integer.toString(pb.getStartCount()));
@@ -55,28 +36,24 @@ public class testOController {
 
 		//목록데이터 취득
 		List<HashMap<String, String>> list = iTestOService.getO1List(params);
-		
+
 		mav.addObject("list", list);
 		mav.addObject("page", page);
 		mav.addObject("pb", pb);
-		
-		mav.setViewName("redirect:testO");
+
+		//} catch (Exception e) {
+		//	e.printStackTrace();
+		//}
+
+		mav.setViewName("testO/testO");
 		return mav;
 	}
-	
+
+
 	@RequestMapping(value ="/testOAdd")
 	public ModelAndView	testOAdd(
-		@RequestParam HashMap<String, String> params,ModelAndView mav) throws Throwable{
+			@RequestParam HashMap<String, String> params,ModelAndView mav) throws Throwable{
 		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);
-		System.out.println("testttttttttestttttttttesttttttttttttt"+params);		
 
 		int cnt = iTestOService.addO1(params);
 
@@ -88,29 +65,30 @@ public class testOController {
 		}
 		return mav;
 	}
-	
+
 	@RequestMapping(value ="/testOUpdate")
 	public ModelAndView testOUpdate(
 			@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable {
-		
+
 		int cnt = iTestOService.updateO1(params);
-		
+
 		if(cnt > 0) { //수정 성공
-			mav.setViewName("redirect:testO");
+			mav.addObject("page", params.get("page"));
+			mav.setViewName("redirect:testO"); //get방식으로 넘어감
 		} else {
 			mav.addObject("msg", "수정에 실패하였습니다.");
 			mav.setViewName("test/failedAction");
 		}
 		return mav;
 	}
-	
+
 	@RequestMapping(value ="/testODelete")
 	public ModelAndView testODelete(
 			@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable{
 		int cnt = iTestOService.deleteO1(params);
-		
+
 		if(cnt > 0) { //삭제 성공
-			mav.setViewName("reditect:testO");
+			mav.setViewName("redirect:testO");
 		} else {
 			mav.addObject("msg", "삭제에 실패하였습니다.");
 			mav.setViewName("test/failedAction");

@@ -172,34 +172,44 @@ $(document).ready(function() {
 	});
 	
 	$(".write_area").on("click", "#addBtn", function() { //저장
-		$("#actionForm").attr("action", "testOAdd");
-		$("#actionForm").submit();
+		if(checkVal("#con")) { //db에 con은 null허용을 안함
+			alert("내용을 입력하세요");
+			$("#con").focus();
+		} else {
+			$("#actionForm").attr("action", "testOAdd");
+			$("#actionForm").submit();
+		}
 	});
-	
+
 	$(".write_area").on("click", "#updateBtn", function() { //수정
-		$("#actionForm").attr("action", "testOUpdate");
-		$("#actionForm").submit();
+		f(checkVal("#con")) { //db에 con은 null허용을 안함
+			alert("내용을 입력하세요");
+			$("#con").focus();
+		} else {
+			$("#actionForm").attr("action", "testOUpdate");
+			$("#actionForm").submit();
+		}
 	});
-	
-	$(".ob_list_wrap").on("click", "#deleteBtn",function(){ //삭제	
+
+	$(".ob_list_wrap").on("click", "#deleteBtn",function(){ //삭제
 		if(checkVal("#no")) {
 			alert("삭제하시겠습니까?")
+
+			var no = $(this).parent().attr("no");
+			$("#no").val(no);
+			$("#actionForm").attr("action","testODelete");
+			$("#actionForm").submit();
 		}
-		var no = $(this).parent().attr("no");
-		$("#no").val(no);
-		$("#actionForm").attr("action","testODelete");
-		$("#actionForm").submit();
-		
 	});
-	
+
 	$("body").on("click", "#loginBtn", function() {
 		location.href = "Login";
 	});
-	
+
 	$("#logoutBtn").on("click", function() {
 		location.href = "Logout";
 	});
-	
+
 	$(".paging_wrap").on("click", "span", function() {
 		$("#page").val($(this).attr("page"));
 		$("#actionForm").attr("action", "testO");
@@ -227,7 +237,7 @@ function checkVal(sel) {
 			${sMNm}님 어서오십시오.<input type="button" value="로그아웃" id="logoutBtn"/>
 		</c:otherwise>
 	</c:choose>
-	
+
 </div>
 <div class="ob_wrap">
 	<!-- Write -->
@@ -235,13 +245,13 @@ function checkVal(sel) {
 		<c:choose>
 			<c:when test="${empty sMNo}">
 				<!-- 비 로그인 시 -->
-				
+
 				<form action="#" id="actionForm" method="post">
 					<input type="hidden" id="m_no" name="m_no" value="${sMNo}">
 					<input type="hidden" id="no" name="no">
 					<input type="hidden" id="page" name="page" value="${page}">
 				</form>
-				
+
 				<div class="login_req_wrap">
 					<div class="login_req">작성 시 로그인이 필요합니다.
 					<input type="button" value="로그인" id="loginBtn"/></div>
@@ -253,12 +263,13 @@ function checkVal(sel) {
 					<input type="hidden" id="m_no" name="m_no" value="${sMNo}">
 					<input type="hidden" id="no" name="no" />
 					<input type="hidden" id="page" name="page" value="${page}">
-					
+
 					<div class="user_info">
 						<div class="user_name">${sMNm}</div>
 					</div>
 					<div class="write_con_wrap">
 						<textarea class="write_con" id="con" name="con"></textarea>
+						<!-- name이 있어야 값이 넘어감 -->
 					</div>
 					<div class="btn_wrap">
 						<input type="button" value="저장" class="action_btn" id="addBtn"/>
