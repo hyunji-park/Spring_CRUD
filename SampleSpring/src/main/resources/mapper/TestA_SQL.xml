@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="testA">
+	<select id="getABCnt" parameterType="hashmap" resultType="integer">
+		SELECT COUNT(*) AS CNT
+		FROM B2 B INNER JOIN M1 M
+		ON B.M_NO = M.M_NO
+		WHERE 1 = 1
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					AND B_TITLE LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					AND M.M_NM LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	<select id="getABList" parameterType="hashmap" resultType="hashmap">
+		SELECT B.B_NO, B.B_TITLE, B.M_NM, B.B_DT, B.B_HIT
+		FROM ( SELECT B.B_NO, B.B_TITLE, M.M_NM, TO_CHAR(B.B_DT, 'YYYY-MM-DD') AS B_DT, B.B_HIT,
+        		ROW_NUMBER() OVER(ORDER BY B.B_NO DESC) AS RNUM
+				FROM B2 B INNER JOIN M1 M ON B.M_NO = M.M_NO
+     			WHERE 1 = 1
+     			<if test="searchTxt != null and searchTxt != ''">
+					<choose>
+						<when test="searchGbn eq 0">
+							AND B_TITLE LIKE '%' || #{searchTxt} || '%'
+						</when>
+						<when test="searchGbn eq 1">
+							AND M.M_NM LIKE '%' || #{searchTxt} || '%'
+						</when>
+					</choose>
+				</if>
+     		) B
+		WHERE B.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<insert id="abAdd" parameterType="hashmap">
+		INSERT INTO B2(B_NO, M_NO, B_TITLE, B_CON)
+		VALUES (B2_SEQ.NEXTVAL, #{mno}, #{title}, #{con})
+	</insert>
+</mapper>
