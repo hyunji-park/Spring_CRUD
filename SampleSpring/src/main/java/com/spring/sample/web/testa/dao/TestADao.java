@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class TestADao implements ITestADao{
-	
+
 	@Autowired
 	public SqlSession sqlSession;
 
@@ -26,5 +26,25 @@ public class TestADao implements ITestADao{
 	@Override
 	public int abAdd(HashMap<String, String> params) throws Throwable {
 		return sqlSession.insert("testA.abAdd", params);
+	}
+
+	@Override
+	public HashMap<String, String> getAB(HashMap<String, String> params) throws Throwable {
+		return sqlSession.selectOne("testA.getAB", params);
+	}
+
+	@Override
+	public int abUpdate(HashMap<String, String> params) throws Throwable {
+		return sqlSession.update("testA.abUpdate", params);
+	}
+
+	@Override
+	public int abDelete(HashMap<String, String> params) throws Throwable {
+		return sqlSession.update("testA.abDelete", params); //삭제를 안함(DB에 보관)-요즘 추세임
+	}
+
+	@Override
+	public void updateABHit(HashMap<String, String> params) throws Throwable {
+		sqlSession.update("testA.updateABHit", params);
 	}
 }

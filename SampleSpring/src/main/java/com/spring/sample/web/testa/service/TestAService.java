@@ -28,4 +28,24 @@ public class TestAService implements ITestAService{
 	public int abAdd(HashMap<String, String> params) throws Throwable {
 		return iTestADao.abAdd(params);
 	}
+
+	@Override
+	public HashMap<String, String> getAB(HashMap<String, String> params) throws Throwable {
+		return iTestADao.getAB(params);
+	}
+
+	@Override
+	public int abUpdate(HashMap<String, String> params) throws Throwable {
+		return iTestADao.abUpdate(params);
+	}
+
+	@Override
+	public int abDelete(HashMap<String, String> params) throws Throwable {
+		return iTestADao.abDelete(params);
+	}
+
+	@Override
+	public void updateABHit(HashMap<String, String> params) throws Throwable {
+		iTestADao.updateABHit(params);
+	}
 }

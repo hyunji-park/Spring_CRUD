@@ -11,4 +11,12 @@ public interface ITestADao {
 
 	public int abAdd(HashMap<String, String> params) throws Throwable;
 
+	public HashMap<String, String> getAB(HashMap<String, String> params) throws Throwable;
+
+	public int abUpdate(HashMap<String, String> params) throws Throwable;
+
+	public int abDelete(HashMap<String, String> params) throws Throwable;
+
+	public void updateABHit(HashMap<String, String> params) throws Throwable;
+
 }

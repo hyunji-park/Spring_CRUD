@@ -33,6 +33,7 @@ $(document).ready(function() {
 	});
 	
 	$("#searchBtn").on("click", function() {
+		$("#oldTxt").val($("#searchTxt").val()); //검색어 유지
 		$("#page").val("1");
 		reloadList();
 	});
@@ -42,12 +43,19 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-	
-	
+
+
 	$(".paging_wrap").on("click", "span", function() {
 		$("#page").val($(this).attr("page"));
 		$("#searchTxt").val($("#oldTxt").val());
 		reloadList();
+	});
+
+	$("tbody").on("click", "tr", function() {
+		$("#no").val($(this).attr("no"));
+
+		$("#actionForm").attr("action", "testAB");
+		$("#actionForm").submit();
 	});
 });
 

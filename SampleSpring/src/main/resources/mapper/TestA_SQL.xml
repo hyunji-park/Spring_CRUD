@@ -5,7 +5,7 @@
 		SELECT COUNT(*) AS CNT
 		FROM B2 B INNER JOIN M1 M
 		ON B.M_NO = M.M_NO
-		WHERE 1 = 1
+		WHERE B.B_DEL = 1 <!-- 브라우저에서는 삭제되지만 디비엔 남음(디비에서 del을 1로 바꾸면 다시 복구됨) -->
 		<if test="searchTxt != null and searchTxt != ''">
 			<choose>
 				<when test="searchGbn eq 0">
@@ -23,7 +23,7 @@
 		FROM ( SELECT B.B_NO, B.B_TITLE, M.M_NM, TO_CHAR(B.B_DT, 'YYYY-MM-DD') AS B_DT, B.B_HIT,
         		ROW_NUMBER() OVER(ORDER BY B.B_NO DESC) AS RNUM
 				FROM B2 B INNER JOIN M1 M ON B.M_NO = M.M_NO
-     			WHERE 1 = 1
+     			WHERE B.B_DEL = 1 
      			<if test="searchTxt != null and searchTxt != ''">
 					<choose>
 						<when test="searchGbn eq 0">
@@ -42,4 +42,30 @@
 		INSERT INTO B2(B_NO, M_NO, B_TITLE, B_CON)
 		VALUES (B2_SEQ.NEXTVAL, #{mno}, #{title}, #{con})
 	</insert>
+	
+	<select id="getAB" parameterType="hashmap" resultType="hashmap">
+		SELECT B.B_NO, B.B_TITLE, M.M_NO, M.M_NM, B.B_CON,
+        TO_CHAR(B_DT, 'YYYY-MM-DD') AS B_DT, B_HIT
+		FROM B2 B INNER JOIN M1 M
+		                ON B.M_NO = M.M_NO
+		WHERE 1 = 1
+		AND B.B_NO = #{no}
+	</select>
+	
+	<update id="abUpdate" parameterType="hashmap">
+		UPDATE B2 SET B_TITLE = #{title},
+              B_CON = #{con}
+		WHERE B_NO = #{no}
+		AND M_NO = #{mno}
+	</update>
+	
+	<update id="abDelete" parameterType="hashmap">
+		UPDATE B2 SET B_DEL = 0
+		WHERE B_NO = #{no}
+	</update>
+	
+	<update id="updateABHit" parameterType="hashmap">
+		UPDATE B2 SET B_HIT = B_HIT + 1
+		WHERE B_NO = #{no}
+	</update>
 </mapper>
