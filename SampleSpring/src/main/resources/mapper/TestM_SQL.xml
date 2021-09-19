@@ -37,34 +37,30 @@
 		WHERE M1.RNUM BETWEEN #{startCnt} AND #{endCnt}
 	</select>
 	
-	<!-- <insert id="MAdd" parameterType="hashmap">
-		INSERT INTO B2(B_NO, M_NO, B_TITLE, B_CON)
-		VALUES (B2_SEQ.NEXTVAL, #{mno}, #{title}, #{con})
+	<insert id="MAdd" parameterType="hashmap">
+		INSERT INTO M1(M_NO, M_ID, M_NM, M_PHONE)
+		VALUES (M1_SEQ.NEXTVAL, #{id}, #{nm}, #{phone})
 	</insert>
 	
 	<select id="getMDtl" parameterType="hashmap" resultType="hashmap">
-		SELECT B.B_NO, B.B_TITLE, M.M_NO, M.M_NM, B.B_CON,
-        TO_CHAR(B_DT, 'YYYY-MM-DD') AS B_DT, B_HIT
-		FROM B2 B INNER JOIN M1 M
-		                ON B.M_NO = M.M_NO
-		WHERE 1 = 1
-		AND B.B_NO = #{no}
+		SELECT M1.M_NO, M1.M_ID, M1.M_NM, M1.M_PHONE,
+        	TO_CHAR(M_JOIN, 'YYYY-MM-DD') AS M_JOIN,
+		FROM M1
+		AND M1.M_NO = #{no}
 	</select>
 	
-	<update id="abUpdate" parameterType="hashmap">
-		UPDATE B2 SET B_TITLE = #{title},
-              B_CON = #{con}
-		WHERE B_NO = #{no}
-		AND M_NO = #{mno}
+	<update id="MUpdate" parameterType="hashmap">
+		UPDATE M1 SET M_NM = #{nm},
+				<if test="pw != null and pw != ''">
+				 M_PW = #{pw},
+				</if>
+		         M_PHONE = #{phone}
+		WHERE M_NO = #{no}
 	</update>
 	
-	<update id="abDelete" parameterType="hashmap">
-		UPDATE B2 SET B_DEL = 0
-		WHERE B_NO = #{no}
+	<update id="MDelete" parameterType="hashmap">
+		UPDATE M1 SET M_DEL = 0
+		WHERE M_NO = #{no}
 	</update>
 	
-	<update id="updateABHit" parameterType="hashmap">
-		UPDATE B2 SET B_HIT = B_HIT + 1
-		WHERE B_NO = #{no}
-	</update> -->
 </mapper>

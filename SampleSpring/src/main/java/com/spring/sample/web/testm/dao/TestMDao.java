@@ -17,7 +17,7 @@ public class TestMDao implements ITestMDao {
 	public int getMCnt(HashMap<String, String> params) throws Throwable {
 		return sqlSession.selectOne("TestM.getMCnt", params);
 	}
-	
+
 	@Override
 	public List<HashMap<String, String>> getMList(HashMap<String, String> params) throws Throwable {
 		return sqlSession.selectList("testM.getMList", params);
@@ -25,7 +25,7 @@ public class TestMDao implements ITestMDao {
 
 	@Override
 	public int MAdd(HashMap<String, String> params) throws Throwable {
-		return sqlSession.insert("testM.MAdd");
+		return sqlSession.insert("testM.MAdd", params);
 	}
 
 	@Override
