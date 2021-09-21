@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.sample.common.bean.PagingBean;
 import com.spring.sample.common.service.IPagingService;
+import com.spring.sample.util.Utils;
 import com.spring.sample.web.testm.service.ITestMService;
 
 @Controller
@@ -24,16 +25,16 @@ public class TestMController {
 
 	@Autowired
 	public ITestMService iTestMService;
-	
+
 	@Autowired
 	public IPagingService iPagingService;
-	
+
 	@RequestMapping(value = "/testMList")
 	public ModelAndView testMList(
 			@RequestParam HashMap<String, String> params, ModelAndView mav) {
-		
+
 		String page="1";
-		
+
 		if(params.get("page") != null) {
 			page = params.get("page");
 		}
@@ -41,29 +42,29 @@ public class TestMController {
 		mav.setViewName("testm/testMList");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/testMLists", method = RequestMethod.POST,
 			produces = "text/json; charset=UTF-8")
 	@ResponseBody
 	public String testMLists (
 			@RequestParam HashMap<String, String> params) throws Throwable {
 		ObjectMapper mapper = new ObjectMapper();
-		
+
 		Map<String, Object> modelmap = new HashMap<String, Object>();
-		
+
 		int page = Integer.parseInt(params.get("page"));
 		int cnt = iTestMService.getMCnt(params);
 		PagingBean pb = iPagingService.getPagingBean(page, cnt, 3, 2);
 		params.put("startCnt", Integer.toString(pb.getStartCount()));
 		params.put("endCnt", Integer.toString(pb.getEndCount()));
 		List<HashMap<String, String>> list = iTestMService.getMList(params);
-		
+
 		modelmap.put("list", list);
 		modelmap.put("pb", pb);
-		
+
 		return mapper.writeValueAsString(modelmap);
 	}
-	
+
 	@RequestMapping(value = "/testMAdd")
 	public ModelAndView testABAdd(HttpSession session, ModelAndView mav) {
 		if(session.getAttribute("sMNo") != null) {
@@ -71,40 +72,49 @@ public class TestMController {
 		} else {
 			mav.setViewName("redirect:Login");
 		}
-		
+
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/testMAdds", method = RequestMethod.POST,
 			produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public String testMAdds(@RequestParam HashMap<String, String> params) throws Throwable {
-		ObjectMapper mapper = new ObjectMapper();		
+		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		
+
 		String result = "success";
-		
+
 		try {
-			int cnt = iTestMService.MAdd(params);
-		
-		if(cnt == 0) {
-			result = "failed";
-		}
+			int checkCnt = iTestMService.gettestMIdCheck(params);
+			if(checkCnt == 0) {
+				//비밀번호 암호화
+				String pw = Utils.encryptAES128(params.get("pw"));
+				params.put("pw", pw);
+
+				int cnt = iTestMService.MAdd(params);
+
+				if(cnt == 0) {
+					result = "failed";
+				}
+			} else {
+				modelMap.put("msg", "중복된 아이디가 있습니다.");
+				//modelMap.
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 			result = "error";
 		}
 		modelMap.put("result", result);
-		
+
 		return mapper.writeValueAsString(modelMap);
 	}
-	
+
 	@RequestMapping(value = "/testMDtl")
 	public ModelAndView testMDtl(
 			@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable{
 		if(params.get("no") != null) {
-			
+
 			HashMap<String, String> data = iTestMService.getMDtl(params);
 			mav.addObject("data", data);
 			mav.setViewName("testm/testMDtl");
@@ -113,14 +123,18 @@ public class TestMController {
 		}
 		return mav;
 	}
-	
-	@RequestMapping(value = "/testMUpdate") 
+
+	@RequestMapping(value = "/testMUpdate")
 	public ModelAndView testMUpdate(
 			@RequestParam HashMap<String, String> params, ModelAndView mav) throws Throwable{
-		
-		if(params.get("no") != null) { 
+
+		if(params.get("no") != null) {
 			HashMap<String, String> data = iTestMService.getMDtl(params);
-			
+
+			//비밀번호 복호화
+			String pw = Utils.decryptAES128(data.get("M_PW"));
+			data.put("M_PW", pw);
+
 			mav.addObject("data", data);
 			mav.setViewName("testm/testMUpdate");
 		} else {
@@ -128,55 +142,59 @@ public class TestMController {
 		}
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/testMUpdates", method = RequestMethod.POST,
 			produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public String testMUpdates(@RequestParam HashMap<String, String> params) throws Throwable {
-		ObjectMapper mapper = new ObjectMapper();		
+		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		
+
+		//비밀번호 암호화
+		String pw = Utils.encryptAES128(params.get("M_PW"));
+		params.put("M_PW", pw);
+
 		String result = "success";
-		
+
 		try {
 			int cnt = iTestMService.MUpdate(params);
-		
+
 			if(cnt == 0) {
 				result = "failed";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			result = "error";
 		}
 		modelMap.put("result", result);
-		
+
 		return mapper.writeValueAsString(modelMap);
 	}
-	
+
 	@RequestMapping(value = "/testMDeletes", method = RequestMethod.POST,
 			produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public String testMDeletes(
 			@RequestParam HashMap<String, String> params) throws Throwable {
-		ObjectMapper mapper = new ObjectMapper();		
+		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		
+
 		String result = "success";
-		
+
 		try {
 			int cnt = iTestMService.MDelete(params);
-			
+
 			if(cnt == 0) {
 				result = "failed";
 			}
 		} catch (Exception e) {
-				e.printStackTrace();
-			
+			e.printStackTrace();
+
 			result = "error";
 		}
 		modelMap.put("result", result);
-		
+
 		return mapper.writeValueAsString(modelMap);
 	}
 }

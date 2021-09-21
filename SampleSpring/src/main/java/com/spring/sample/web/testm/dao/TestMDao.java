@@ -42,4 +42,9 @@ public class TestMDao implements ITestMDao {
 	public int MDelete(HashMap<String, String> params) throws Throwable {
 		return sqlSession.update("testM.MDelete", params);
 	}
+
+	@Override
+	public int gettestMIdCheck(HashMap<String, String> params) throws Throwable {
+		return sqlSession.selectOne("testM.gettestMIdCheck", params);
+	}
 }

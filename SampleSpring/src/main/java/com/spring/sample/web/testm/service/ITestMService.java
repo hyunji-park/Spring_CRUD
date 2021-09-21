@@ -17,4 +17,6 @@ public interface ITestMService {
 
 	public int MDelete(HashMap<String, String> params) throws Throwable;
 
+	public int gettestMIdCheck(HashMap<String, String> params) throws Throwable;
+
 }

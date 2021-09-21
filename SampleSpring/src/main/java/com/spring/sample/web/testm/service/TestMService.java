@@ -43,6 +43,11 @@ public class TestMService implements ITestMService {
 	public int MDelete(HashMap<String, String> params) throws Throwable {
 		return iTestMDao.MDelete(params);
 	}
-	
-	
+
+	@Override
+	public int gettestMIdCheck(HashMap<String, String> params) throws Throwable {
+		return iTestMDao.gettestMIdCheck(params);
+	}
+
+
 }
