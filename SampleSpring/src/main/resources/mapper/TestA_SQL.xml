@@ -19,8 +19,8 @@
 	</select>
 	
 	<select id="getABList" parameterType="hashmap" resultType="hashmap">
-		SELECT B.B_NO, B.B_TITLE, B.M_NM, B.B_DT, B.B_HIT
-		FROM ( SELECT B.B_NO, B.B_TITLE, M.M_NM, TO_CHAR(B.B_DT, 'YYYY-MM-DD') AS B_DT, B.B_HIT,
+		SELECT B.B_NO, B.B_TITLE, B.M_NM, B.B_DT, B.B_HIT, B.B_FILE
+		FROM ( SELECT B.B_NO, B.B_TITLE, M.M_NM, TO_CHAR(B.B_DT, 'YYYY-MM-DD') AS B_DT, B.B_HIT, B.B_FILE,
         		ROW_NUMBER() OVER(ORDER BY B.B_NO DESC) AS RNUM
 				FROM B2 B INNER JOIN M1 M ON B.M_NO = M.M_NO
      			WHERE B.B_DEL = 1 
@@ -39,12 +39,12 @@
 	</select>
 	
 	<insert id="abAdd" parameterType="hashmap">
-		INSERT INTO B2(B_NO, M_NO, B_TITLE, B_CON)
-		VALUES (B2_SEQ.NEXTVAL, #{mno}, #{title}, #{con})
+		INSERT INTO B2(B_NO, M_NO, B_TITLE, B_CON, B_FILE)
+		VALUES (B2_SEQ.NEXTVAL, #{mno}, #{title}, #{con}, #{bFile})
 	</insert>
 	
 	<select id="getAB" parameterType="hashmap" resultType="hashmap">
-		SELECT B.B_NO, B.B_TITLE, M.M_NO, M.M_NM, B.B_CON,
+		SELECT B.B_NO, B.B_TITLE, M.M_NO, M.M_NM, B.B_CON, B.B_FILE,
         TO_CHAR(B_DT, 'YYYY-MM-DD') AS B_DT, B_HIT
 		FROM B2 B INNER JOIN M1 M
 		                ON B.M_NO = M.M_NO
@@ -54,7 +54,8 @@
 	
 	<update id="abUpdate" parameterType="hashmap">
 		UPDATE B2 SET B_TITLE = #{title},
-              B_CON = #{con}
+              B_CON = #{con},
+              B_FILE = #{bFile}
 		WHERE B_NO = #{no}
 		AND M_NO = #{mno}
 	</update>

@@ -6,6 +6,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+td img {
+	width: 15px;
+}
+</style>
 <script type="text/javascript"
 		src="resources/script/jquery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
@@ -13,16 +18,16 @@ $(document).ready(function() {
 	if("${param.searchGbn}" != "") {
 		$("#searchGbn").val("${param.searchGbn}");
 	}
-	
+
 	reloadList();
-	
+
 	//글작성
 	$("#addBtn").on("click", function() {
 		$("#searchTxt").val($("#oldTxt").val());
 		$("#actionForm").attr("action", "testABAdd");
 		$("#actionForm").submit();
 	});
-	
+
 	//로그인
 	$("#loginBtn").on("click", function() {
 		location.href = "Login";
@@ -31,7 +36,7 @@ $(document).ready(function() {
 	$("#logoutBtn").on("click", function() {
 		location.href = "Logout";
 	});
-	
+
 	$("#searchBtn").on("click", function() {
 		$("#oldTxt").val($("#searchTxt").val()); //검색어 유지
 		$("#page").val("1");
@@ -82,11 +87,16 @@ function reloadList() {
 //목록그리기
 function drawList(list) {
 	var html ="";
-	
+
 	for (var data of list) {
 		html += "<tr no=\""+ data.B_NO + "\">		";
 	    html += "<td>" + data.B_NO + "</td>		";
-	    html += "<td>" + data.B_TITLE + "</td>		";
+	    html += "<td>";
+	    html += data.B_TITLE;
+	    if(data.B_FILE != null) {
+	    	html += "<img src=\"resources/images/attach_icon.png\" />";
+	    }
+	    html += "</td>";
 	    html += "<td>" + data.M_NM + "</td>		";
 	    html += "<td>" + data.B_DT + "</td>		";
 	    html += "<td>" + data.B_HIT + "</td>		";	
