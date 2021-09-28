@@ -82,11 +82,8 @@ public class TestAController {
 
 	@RequestMapping(value = "/testABAdd")
 	public ModelAndView testABAdd(HttpSession session, ModelAndView mav) {
-		if(session.getAttribute("sMNo") != null) {
-			mav.setViewName("testa/testABAdd");
-		} else {
-			mav.setViewName("redirect:Login"); //redirect의 목적은 사용자의 주소를 저 주소(Login)로 이동하겠다는 것
-		}
+		mav.setViewName("testa/testABAdd");
+
 		return mav;
 	}
 

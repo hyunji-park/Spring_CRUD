@@ -1,6 +1,7 @@
 package com.spring.sample.common.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -23,9 +24,12 @@ public class CommonAOP {
 	 * .. -> 모든 경로
 	 * && -> 필터 추가
 	 */
-	@Pointcut("execution(* com.spring.sample..CalendarController.*(..))")
+	@Pointcut("execution(* com.spring.sample..TestAController.*(..))"
+			+ "&& !execution(* com.spring.sample..TestAController.*s(..))"
+			+ "&& !execution(* com.spring.sample..TestAController.*List(..))"
+			+ "&& !execution(* com.spring.sample..TestAController.*AB(..))")
 	public void testAOP() {}
-	
+
 	//ProceedingJoinPoint -> 대상 적용 이벤트 필터
 	/*
 	 * @Before -> 메소드 실행 전
@@ -36,30 +40,24 @@ public class CommonAOP {
 	 */
 	@Around("testAOP()")
 	public ModelAndView testAOP(ProceedingJoinPoint joinPoint)
-														throws Throwable {
+			throws Throwable {
 		ModelAndView mav = new ModelAndView();
-		
+
 		//Request 객체 취득
 		HttpServletRequest request
-		= ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+				= ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
 
-		mav = (ModelAndView) joinPoint.proceed(); //기존 이벤트 처리 행위를 이어서 진행
-		
+		HttpSession session = request.getSession(); //세션 취득
+
+		if(session.getAttribute("sMNo") != null) {
+			mav = (ModelAndView) joinPoint.proceed(); //기존 이벤트 처리 행위를 이어서 진행
+		} else {
+			mav.setViewName("redirect:Login");
+		}
+
+
 		System.out.println("------- testAOP 실행됨 ------");
-		
+
 		return mav;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
