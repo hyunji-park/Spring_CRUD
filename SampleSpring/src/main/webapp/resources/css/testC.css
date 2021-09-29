@@ -1,0 +1,31 @@
+@charset "EUC-KR";
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	font-size: 0pt;
+	min-width: 1200px;
+}
+.top {
+	height: 40px;
+	box-shadow: 1px 1px 8px #444;
+}
+.left {
+	height: calc(100% - 40px);
+	display: inline-block;
+	vertical-align: top;
+	width: 199px;
+	border-right: 1px solid #A9A9A9;
+}
+.con {
+	display: inline-block;
+	vertical-align: top;
+	width: calc(100% - 200px);
+	min-width: 1000px;
+	height: calc(100% - 40px);
+}
+.top, .left, .con {
+	font-size: 14pt;
+}
