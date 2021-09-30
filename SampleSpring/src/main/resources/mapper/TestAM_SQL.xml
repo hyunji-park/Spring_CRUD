@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="testAM">
+	<select id="getM1Cnt" parameterType="hashmap" resultType="integer">
+		SELECT COUNT(*) AS CNT
+		FROM M1
+		WHERE M_DEL = 1 <!-- 브라우저에서는 삭제되지만 디비엔 남음(디비에서 del을 1로 바꾸면 다시 복구됨) -->
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					AND M_NM LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					AND M_ID LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getM1List" parameterType="hashmap" resultType="hashmap">
+		SELECT M1.M_NO, M1.M_ID, M1.M_NM, M1.M_PHONE
+		FROM (SELECT M_NO, M_ID, M_NM, M_PHONE,
+				ROW_NUMBER() OVER(ORDER BY M_NO DESC) AS RNUM
+			FROM M1
+     		WHERE M1.M_DEL = 1 
+     			<if test="searchTxt != null and searchTxt != ''">
+					<choose>
+						<when test="searchGbn eq 0">
+							AND M1.M_NM LIKE '%' || #{searchTxt} || '%'
+						</when>
+						<when test="searchGbn eq 1">
+							AND M1.M_ID LIKE '%' || #{searchTxt} || '%'
+						</when>
+					</choose>
+				</if>
+     		) M1
+		WHERE M1.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<insert id="addM1" parameterType="hashmap">
+		INSERT INTO M1(M_NO, M_ID, M_PW, M_NM, M_PHONE)
+		VALUES (M1_SEQ.NEXTVAL, #{m_id}, #{m_pw}, #{m_nm}, #{m_phone})
+	</insert>
+	
+	<update id="updateM1" parameterType="hashmap">
+		UPDATE M1 SET M_NM = #{m_nm},
+				<if test="m_pw != null and m_pw != ''">
+				 M_PW = #{m_pw},
+				</if>
+		         M_PHONE = #{m_phone}
+		WHERE M_NO = #{m_no}
+	</update>
+	
+	<update id="deleteM1" parameterType="hashmap">
+		UPDATE M1 SET M_DEL = 0
+		WHERE M_NO = #{m_no}
+	</update>
+	
+	<select id="getM1IdCheck" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM M1
+		WHERE M_ID = #{m_id}
+	</select>
+	
+	<select id="getM1" parameterType="hashmap" resultType="hashmap">
+		SELECT M_NO, M_ID, M_NM, M_PHONE, TO_CHAR(M_JOIN, 'YYYY-MM-DD') AS M_JOIN
+		FROM M1
+		WHERE M_NO = #{m_no}
+	</select>
+</mapper>
