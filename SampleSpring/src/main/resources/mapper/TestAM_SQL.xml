@@ -63,7 +63,7 @@
 	</select>
 	
 	<select id="getM1" parameterType="hashmap" resultType="hashmap">
-		SELECT M_NO, M_ID, M_NM, M_PHONE, TO_CHAR(M_JOIN, 'YYYY-MM-DD') AS M_JOIN
+		SELECT M_NO, M_ID, M_PW, M_NM, M_PHONE, TO_CHAR(M_JOIN, 'YYYY-MM-DD') AS M_JOIN
 		FROM M1
 		WHERE M_NO = #{m_no}
 	</select>
