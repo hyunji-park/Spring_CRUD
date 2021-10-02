@@ -1,4 +1,4 @@
-package com.spring.sample.batch.controller;
+package com.gd.test.batch.controller;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,9 +17,9 @@ public class BatchComponent {
 	// LW는 마지막 평일
 	// 요일에서 숫자1#숫자2의경우 숫자2번째 주의 숫자1번 요일에 실행.
 	// 예) 2#4 - 4번째주 월요일에 실행.
-	@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 0 0/1 * * *")
 	public void cronTest1() {
-		System.out.println("batch!!");
+		System.out.println("배치프로그램 구동중!!");
 	}
 
 }
