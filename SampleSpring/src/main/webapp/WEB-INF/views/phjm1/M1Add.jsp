@@ -9,6 +9,10 @@
 #att {
 	display: none;
 }
+img {
+	width: 40%;
+	height: 40%;
+}
 </style>
 <script type="text/javascript"
 		src="resources/script/jquery/jquery-1.12.4.min.js"></script>

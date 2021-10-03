@@ -7,6 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+img {
+	width: 40%;
+	height: 40%;
+}
+</style>
 <script type="text/javascript"
 		src="resources/script/jquery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
@@ -15,20 +21,20 @@ $(document).ready(function() {
 		$("#actionForm").attr("action", "M1List");
 		$("#actionForm").submit();
 	});
-	
+
 	$("#updateBtn").on("click", function() {
 		$("#actionForm").attr("action", "M1Update");
 		$("#actionForm").submit();
 	});
-	
+
 	$("#deleteBtn").on("click", function() {
 		if(confirm("삭제하시겠습니까?")) {
 			var params = $("#actionForm").serialize();
-			
-			$.ajax({ 
-				url: "M1CUDAjax", 
+
+			$.ajax({
+				url: "M1CUDAjax",
 				type: "post",
-				dataType: "json", 
+				dataType: "json",
 				data: params,
 				success: function(res) {
 					if(res.result == "success") {
@@ -42,8 +48,8 @@ $(document).ready(function() {
 				error: function(request, status, error) {
 					console.log(error);
 				}
-			});	
-		}	
+			});
+		}
 	});
 });
 </script>
@@ -51,10 +57,10 @@ $(document).ready(function() {
 <body>
 <form action="#" id="actionForm" method="post">
 	<input type="hidden" name="gbn" value="d" />
-	<input type="hidden" name="serachGbn" value="${param.searchGbn}"> 
-	<input type="hidden" name="serachTxt" value="${param.searchTxt}"> 
-	<input type="hidden" name="page" value="${param.page}"> 
-	<input type="hidden" name="m_no" value="${param.m_no}"> 
+	<input type="hidden" name="serachGbn" value="${param.searchGbn}">
+	<input type="hidden" name="serachTxt" value="${param.searchTxt}">
+	<input type="hidden" name="page" value="${param.page}">
+	<input type="hidden" name="m_no" value="${param.m_no}">
 </form>
 회원번호 : ${data.M_NO}<br/>
 아이디 : ${data.M_ID}<br/>
@@ -64,11 +70,12 @@ $(document).ready(function() {
 <c:if test="${!empty data.M_IMG}">
 <div>
 	<c:set var="len" value="${fn:length(data.M_IMG)}"></c:set>
-	첨부파일 : 
-	<a href="resources/upload/${fn:replace(fn:replace(data.M_IMG, '[', '%5B'), ']', '%5D')}" 
+	첨부파일 :
+	<a href="resources/upload/${fn:replace(fn:replace(data.M_IMG, '[', '%5B'), ']', '%5D')}"
 		download="${fn:substring(data.M_IMG, 20, len)}">
 	${fn:substring(data.M_IMG, 20, len)}
-	</a>
+	</a><br>
+	<img id="img" src="resources/upload/${data.M_IMG}"/>
 </div>
 </c:if>
 <input type="button" value="목록으로" id="listBtn" />

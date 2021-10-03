@@ -15,6 +15,10 @@
 .hide_btn {
 	display: none;
 }
+img {
+	width: 40%;
+	height: 40%;
+}
 </style>
 <script type="text/javascript"
 		src="resources/script/jquery/jquery-1.12.4.min.js"></script>
@@ -24,6 +28,10 @@
 		src="resources/script/ckeditor/ckeditor.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+	/* $("#btn1").attr("onclick", function(){
+		"$(this).text('do not click');"
+	}); */
+
 	$("#cancelBtn").on("click", function() {
 		$("#backForm").submit()
 	});
@@ -31,11 +39,11 @@ $(document).ready(function() {
 	$("#imgBtn").on("click", function() {
 		$("#att").click();
 	});
-	
+
 	$("#att").on("change", function() {
 		$("#fileName").html($(this).val().substring($(this).val().lastIndexOf("\\") + 1));
 			var fileForm = $("#fileForm");
-			
+
 			fileForm.ajaxForm({
 				success : function(res) {
 					if(res.result == "SUCCESS") {
@@ -54,14 +62,14 @@ $(document).ready(function() {
 			});
 			fileForm.submit();
 	});
-	
+
 	$("#imgDelBtn").on("click", function() {
 		$("#fileName").html(""); //사용자에게 보여지는 파일명
 		$("#m_img").val(""); //DB에 올라갈 파일명
 		$("#imgBtn").attr("class", ""); //첨부파일 선택 버튼 보이기
 		$(this).remove(); //첨부파일 삭제 버튼 제거
 	});
-	
+
 	$("#updateBtn").on("click", function() {
 		if($("#m_pw").val() != "") { // 비밀번호를 변경할 경우
 			if(checkVal("#ocpw")) { // 기존비밀번호 입력여부
@@ -94,15 +102,15 @@ $(document).ready(function() {
 				updateAjax();
 		}
 	});
-});	
-			
+});
+
 function updateAjax(){
 	var params = $("#updateForm").serialize();
-						
-	$.ajax({ 
-		url: "M1CUDAjax", 
+
+	$.ajax({
+		url: "M1CUDAjax",
 		type: "post",
-		dataType: "json", 
+		dataType: "json",
 		data: params,
 		success: function(res) {
 			if(res.result == "success") {
@@ -111,7 +119,7 @@ function updateAjax(){
 			} else if(res.result == "failed") {
 				alert("수정에 실패하였습니다.");
 			} else {
-				alert("수정 중 문제가 발생하였습니다.");
+				console.log(res);
 			}
 		},
 		error: function(request, status, error) {
@@ -130,30 +138,30 @@ function checkVal(sel) {
 </script>
 </head>
 <body>
+<!-- 수정 안됨 : 수정의 경우 회원번호를 제공하지 않기에 수정중에 문제가 발생합니다. -->
 <form id="fileForm" name="fileForm" action="fileUploadAjax" method="post" enctype="multipart/form-data">
 	<input type="file" name="att" id="att">
 </form>
-<form action="M1Dtl" id="backForm" method="post">
-	<input type="hidden" name="gbn" value="u" />
-	<input type="hidden" name="serachGbn" value="${param.searchGbn}"> 
-	<input type="hidden" name="serachTxt" value="${param.searchTxt}"> 
-	<input type="hidden" name="page" value="${param.page}"> 
-	<input type="hidden" name="m_no" value="${param.m_no}"> 
-</form>
+
 <form action="#" id="updateForm" method="post">
+	<input type="hidden" name="gbn" value="u" />
+	<input type="hidden" name="serachGbn" value="${param.searchGbn}">
+	<input type="hidden" name="serachTxt" value="${param.searchTxt}">
+	<input type="hidden" name="page" value="${param.page}">
+	<input type="hidden" name="m_no" value="${param.m_no}">
 	회원번호 : ${data.M_NO}<br>
 	아이디 : ${data.M_ID}<br>
-	<input type="hidden" id="opw" value="${data.M_PW}" /><br/>
+	<input type="hidden" id="opw" value="${data.M_PW}" />
 	기존 비밀번호 <input type="password" id="ocpw" /><br/>
 	비밀번호 <input type="password" id="m_pw" name="m_pw" /><br/>
 	비밀번호 확인 <input type="password" id="pwch" /><br/>
 	이름 <input type="text" id="m_nm" name="m_nm" value="${data.M_NM}"/><br/>
 	전화번호 <input type="text" id="m_phone" name="m_phone" value="${data.M_PHONE}"/> <br/>
-	첨부파일 : <%-- <img id="img" src="resources/upload/${data.M_IMG}"/> --%>
+	첨부파일 :
 	<c:choose>
 		<c:when test="${!empty data.M_IMG}">
 		<!-- 첨부파일이 있는 경우 버튼을 숨긴다. -->
-			<input type="button" value="이미지파일선택" id="imgBtn" class="hide_btn"/>			
+			<input type="button" value="이미지파일선택" id="imgBtn" class="hide_btn"/>
 		</c:when>
 		<c:otherwise>
 			<input type="button" value="이미지파일선택" id="imgBtn" />
@@ -162,10 +170,12 @@ function checkVal(sel) {
 	<c:set var="len" value="${fn:length(data.M_IMG)}"></c:set>
 	<span id="fileName">${fn:substring(data.M_IMG, 20, len)}</span><!-- 현재 등록되어있는 파일명 -->
 	<c:if test="${!empty data.M_IMG}">
-		<input type="button" value="이미지파일삭제" id="imgDelBtn" />
+		<input type="button" value="이미지파일삭제" id="imgDelBtn" value="${data.M_IMG}" />
 	</c:if>
-	<input type="hidden" name="m_img" id="m_img" value="${data.M_IMG}" />
+	<input type="hidden" name="m_img" id="m_img" value="${data.M_IMG}" /><br>
+	<img id="img" src="resources/upload/${data.M_IMG}"/>
 </form>
+<!-- <button id="btn1" onclick="alert('fsdfsdf!');" onchange="alert('chagned!')">click</button> -->
 <input type="button" value="수정" id="updateBtn" />
 <input type="button" value="취소" id="cancelBtn" />
 </body>
