@@ -15,9 +15,9 @@
 .hide_btn {
 	display: none;
 }
-img {
-	width: 40%;
-	height: 40%;
+#img {
+	width: 20%;
+	height: 20%;
 }
 </style>
 <script type="text/javascript"
@@ -33,11 +33,12 @@ $(document).ready(function() {
 	}); */
 
 	$("#cancelBtn").on("click", function() {
-		$("#backForm").submit()
+		history.back();
 	});
 
 	$("#imgBtn").on("click", function() {
 		$("#att").click();
+		//$("#img").attr("src");
 	});
 
 	$("#att").on("change", function() {
@@ -66,6 +67,7 @@ $(document).ready(function() {
 	$("#imgDelBtn").on("click", function() {
 		$("#fileName").html(""); //사용자에게 보여지는 파일명
 		$("#m_img").val(""); //DB에 올라갈 파일명
+		$("#img").attr("src", "");
 		$("#imgBtn").attr("class", ""); //첨부파일 선택 버튼 보이기
 		$(this).remove(); //첨부파일 삭제 버튼 제거
 	});
@@ -156,7 +158,7 @@ function checkVal(sel) {
 	비밀번호 <input type="password" id="m_pw" name="m_pw" /><br/>
 	비밀번호 확인 <input type="password" id="pwch" /><br/>
 	이름 <input type="text" id="m_nm" name="m_nm" value="${data.M_NM}"/><br/>
-	전화번호 <input type="text" id="m_phone" name="m_phone" value="${data.M_PHONE}"/> <br/>
+	전화번호 <input type="text" id="m_phone" name="m_phone" value="${data.M_PHONE}"/><br/>
 	첨부파일 :
 	<c:choose>
 		<c:when test="${!empty data.M_IMG}">
@@ -170,7 +172,7 @@ function checkVal(sel) {
 	<c:set var="len" value="${fn:length(data.M_IMG)}"></c:set>
 	<span id="fileName">${fn:substring(data.M_IMG, 20, len)}</span><!-- 현재 등록되어있는 파일명 -->
 	<c:if test="${!empty data.M_IMG}">
-		<input type="button" value="이미지파일삭제" id="imgDelBtn" value="${data.M_IMG}" />
+		<input type="button" value="이미지파일삭제" id="imgDelBtn" />
 	</c:if>
 	<input type="hidden" name="m_img" id="m_img" value="${data.M_IMG}" /><br>
 	<img id="img" src="resources/upload/${data.M_IMG}"/>

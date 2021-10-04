@@ -9,9 +9,9 @@
 #att {
 	display: none;
 }
-img {
-	width: 40%;
-	height: 40%;
+#img {
+	width: 20%;
+	height: 20%;
 }
 </style>
 <script type="text/javascript"
@@ -20,28 +20,28 @@ img {
 		src="resources/script/jquery/jquery.form.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	
+
 	$("#cancelBtn").on("click", function() {
 		$("#backForm").submit();
 	});
-	
+
 	//이미지파일버튼
 	$("#imgBtn").on("click", function() {
 		$("#att").click();
 	});
-	
+
 	$("#att").on("change", function() {
 		$("#fileName").html($(this).val().substring($(this).val().lastIndexOf("\\") + 1));
 	});
-	
+
 	$("#m_id").on("change", function() {
 		//Ajax
 		var params = $("#addForm").serialize();
-		
-		$.ajax({ 
+
+		$.ajax({
 			url: "M1IdCheckAjax",
 			type: "post",
-			dataType: "json", 
+			dataType: "json",
 			data: params,
 			success: function(res) {
 				if(res.cnt > 0) {
@@ -49,7 +49,7 @@ $(document).ready(function() {
 					$("#check").css("color", "red");
 					$("#checkId").val("false");
 				} else {
-					$("#check").html("사용 가능한 아이디 입니다.");					
+					$("#check").html("사용 가능한 아이디 입니다.");
 					$("#check").css("color", "green");
 					$("#checkId").val("true");
 				}
@@ -59,7 +59,7 @@ $(document).ready(function() {
 			}
 		});
 	});
-	
+
 	$("#addBtn").on("click", function(){
 		if(checkVal("#m_id")) {
 			alert("아이디를 입력하세요.");
@@ -83,7 +83,7 @@ $(document).ready(function() {
 			$("#m_nm").focus();
 		} else {
 			var fileForm = $("#fileForm");
-			
+
 			fileForm.ajaxForm({
 				success : function(res) {
 					if(res.result == "SUCCESS") {
@@ -93,11 +93,11 @@ $(document).ready(function() {
 						}
 						//Ajax
 						var params = $("#addForm").serialize();
-						
-						$.ajax({ 
-							url: "M1CUDAjax", 
+
+						$.ajax({
+							url: "M1CUDAjax",
 							type: "post",
-							dataType: "json", 
+							dataType: "json",
 							data: params,
 							success: function(res) {
 								if(res.result == "success") {
@@ -118,7 +118,7 @@ $(document).ready(function() {
 				},
 				error : function(reg, status, error) {
 					console.log(error);
-					alert("파일 업로드 중 문제가 발생하였습니다.");					
+					alert("파일 업로드 중 문제가 발생하였습니다.");
 				}
 			});
 			fileForm.submit();
@@ -154,7 +154,7 @@ function checkVal(sel) {
 전화번호 <input type="text" id="m_phone" name="m_phone" /><br>
 이미지파일 : <input type="button" value="이미지파일선택" id="imgBtn" />
 <span id="fileName"></span>
-<!-- <img alt="" src=""> -->
+<%-- <img id="img" src="resources/upload/${data.M_IMG}"> --%>
 <input type="hidden" name="m_img" id="m_img" />
 </form>
 <input type="button" value="등록" id="addBtn" />
